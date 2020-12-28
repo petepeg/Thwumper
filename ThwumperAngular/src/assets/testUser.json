@@ -1,0 +1,42 @@
+[
+  {
+    "uname": "John",
+    "uId": 0,
+    "timeline": [
+      {
+        "mID": 0,
+        "body": "body of message here",
+        "dateTime": 0,
+        "replies": [
+          {
+            "uName": "Jane",
+            "uID": 1,
+            "mId": 1,
+            "dateTime": 0,
+            "body": "reply body here"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "uname": "Jane",
+    "uId": 1,
+    "timeline": [
+      {
+        "mID": 2,
+        "body": "body of message here",
+        "dateTime": 0,
+        "replies": [
+          {
+            "uName": "John",
+            "uID": 0,
+            "mId": 3,
+            "dateTime": 0,
+            "body": "reply body here"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+<h2>Timeline</h2>
+<div class="timeline-post" [id]="post._mid" *ngFor="let post of timeline">
+  <a class="uname" [title]="dName + 's details'" [routerLink]="['/user',uName]">{{ dName }} </a>
+  <span>{{ dateFromObjectId(post._mid) }}</span>
+  <p>{{ post.body }}</p>
+  <a class="reply-button" [id]="'replyButton' + post._mid" (click)='onReply(post._mid)'>Reply</a>
+
+  <div class="reply-box" [id]="'replyBox' + post._mid" style="display:none">
+      <input type="text" [id]="'input' + post._mid" autocomplete="off" value="">
+      <button (click)='onSubmitReply(post._mid)'>submit</button>
+      <a (click)='onCancel(post._mid)'>Cancel</a>
+  </div>
+
+  <div class="reply-post-container" *ngFor="let reply of post.replies">
+    <div class="reply-post" *ngIf="reply.uName">
+      
+      <a class="uname" [title]="reply.dName + 's details'" [routerLink]="['/user',reply.uName]">{{ reply.dName }} </a>
+      <span>{{ dateFromObjectId(post._mid) }}</span>
+      <p>{{ reply.body }}</p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="post-input-container">
+  <textarea class="post-input" [(ngModel)]="postInput" ></textarea>
+  <button (click)='onPost(uName)'>Post</button>
+</div>
