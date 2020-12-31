@@ -3,12 +3,12 @@
   <a class="uname" [title]="dName + 's details'" [routerLink]="['/user',uName]">{{ dName }} </a>
   <span>{{ dateFromObjectId(post._mid) }}</span>
   <p>{{ post.body }}</p>
-  <a class="reply-button" [id]="'replyButton' + post._mid" (click)='onReply(post._mid)'>Reply</a>
+  <a *ngIf="!post.replyActive" class="reply-button" [id]="'replyButton-' + post._mid" (click)='onReply(post)'>Reply</a>
 
-  <div class="reply-box" [id]="'replyBox' + post._mid" style="display:none">
-      <input type="text" [id]="'input' + post._mid" autocomplete="off" value="">
-      <button (click)='onSubmitReply(post._mid)'>submit</button>
-      <a (click)='onCancel(post._mid)'>Cancel</a>
+  <div *ngIf="post.replyActive" class="reply-box" [id]="'replyBox-' + post._mid">
+      <input [(ngModel)]="post.replyInput" type="text" [id]="'input-' + post._mid" autocomplete="off" value="">
+      <button (click)='onSubmitReply(post)'>submit</button>
+      <a (click)='onCancel(post)'>Cancel</a>
   </div>
 
   <div class="reply-post-container" *ngFor="let reply of post.replies">
@@ -24,7 +24,7 @@
 
 </div>
 
-<div class="post-input-container">
+<div *ngIf="this.uName === this.uNameActive" class="post-input-container">
   <textarea class="post-input" [(ngModel)]="postInput" ></textarea>
   <button (click)='onPost(uName)'>Post</button>
 </div>

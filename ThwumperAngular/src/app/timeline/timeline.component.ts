@@ -12,6 +12,8 @@ export class TimelineComponent implements OnInit {
   userDetails;
   uName;
   dName;
+  uNameActive = "John";
+  dNameActive = "Johnny";
   timeline;
   postInput;
 
@@ -21,7 +23,9 @@ export class TimelineComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Get userId from path
     const userIdFromRoute = this.route.snapshot.paramMap.get('userId');
+    // Query DB for user info
     let response = this.userDetailsService.getUserByuName(userIdFromRoute);
 
     const myObserver = {
@@ -34,9 +38,11 @@ export class TimelineComponent implements OnInit {
       error: err => console.error('Observer got an error: ' + err),
       complete: () => console.log('Observer got a complete notification'),
     };
+
     response.subscribe(myObserver)
   }
 
+  // Converts MongoDB Object id to timestamp //
   dateFromObjectId(objectId) {
     if (objectId) {
       let date = new Date(parseInt(objectId.substring(0,8),16) * 1000);
@@ -46,65 +52,50 @@ export class TimelineComponent implements OnInit {
     }
   }
 
-  hideShowElement(element:HTMLElement) {
-    (element.style.display === 'none') ? (element.style.display = 'block'):(element.style.display = 'none');
-  }
-
+  // Post and Reply Methods //
   onPost(userName:string) {
     let postData = {
       body:this.postInput
     }
-    let response = this.userDetailsService.postTimeline(this.uName, postData);
+    
+    let response = this.userDetailsService.postTimeline(this.uNameActive, postData);
     const myObserver = {
       next: x => console.log(x),
       error: err => console.error('Observer got an error: ' + err),
       complete: () => this.ngOnInit(),
     };
+
     response.subscribe(myObserver);
     //clear input
     this.postInput = "";
   }
 
-  onReply(mId:number) {
-    let replyButton = document.getElementById("replyButton" + mId);
-    this.hideShowElement(replyButton);
-
-    let replyBox = document.getElementById("replyBox" + mId);
-    this.hideShowElement(replyBox);
+  onReply(post) {
+    post.replyActive = true;
   }
 
-  onCancel(mId:number) {
-    let replyBox = document.getElementById("replyBox" + mId);
-    this.hideShowElement(replyBox);
-    
-    let replyButton = document.getElementById("replyButton" + mId);
-    this.hideShowElement(replyButton);
+  onCancel(post) {
+    post.replyActive = false;
   }
 
-  onSubmitReply(mId:number) {
-    let replyBox = document.getElementById("replyBox" + mId);
-    this.hideShowElement(replyBox);
-
-    let replyButton = document.getElementById("replyButton" + mId);
-    this.hideShowElement(replyButton);
-    
-    let input = (<HTMLInputElement>document.getElementById("input" + mId)).value;
-    //temp vars
-    let userName = "John";
-    let displayName = "Johnny";
+  onSubmitReply(post) {
+    post.replyActive = false;
 
     let postData = {
-      uName: userName,
-      dName: displayName,
-      body: input
+      uName: this.uNameActive,
+      dName: this.dNameActive,
+      body: post.replyInput
     }
-    let response = this.userDetailsService.postReply(userName, mId, postData);
+
+    let response = this.userDetailsService.postReply(this.uNameActive, post._mid, postData);
     const myObserver = {
       next: x => console.log(x),
       error: err => console.error('Observer got an error: ' + err),
       complete: () => this.ngOnInit(),
     };
+
     response.subscribe(myObserver);
+    post.replyInput = "";
   }
 
 }
